@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interview Scheduling</title>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0a66c2;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 25px;
+      border: none;
+      border-radius: 6px;
+      background: #0a66c2;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #004182;
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="form-container">
+    <h2>Schedule Your Interview</h2>
+
+    <form id="interviewForm">
+      <label>Full Name</label>
+      <input type="text" name="candidate_name" required />
+
+      <label>Email Address</label>
+      <input type="email" name="candidate_email" required />
+
+      <label>Preferred Interview Date</label>
+      <input type="date" name="interview_date" required />
+
+      <label>Preferred Interview Time</label>
+      <input type="time" name="interview_time" required />
+
+      <label>Time Zone</label>
+      <select name="interview_timezone" required>
+        <option value="">Select Time Zone</option>
+        <option value="CST">Central Standard Time (CST)</option>
+        <option value="EST">Eastern Standard Time (EST)</option>
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="status"></div>
+  </div>
+
+  <script>
+    // Initialize EmailJS
+    (function () {
+      emailjs.init("XpPNS8CxWR65AHgjj"); // your EmailJS public key
+    })();
+
+    document
+      .getElementById("interviewForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        emailjs
+          .sendForm(
+            "service_9jsx8tn",   // your EmailJS service ID
+            "template_34f1z6c",  // your EmailJS template ID
+            this
+          )
+          .then(
+            function () {
+              document.getElementById("status").innerText =
+                "✅ Thank you! Your interview request has been submitted.";
+            },
+            function (error) {
+              document.getElementById("status").innerText =
+                "❌ Error sending request. Please try again.";
+              console.error(error);
+            }
+          );
+
+        this.reset();
+      });
+  </script>
+
+</body>
+</html>
