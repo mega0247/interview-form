@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- IMPORTANT FOR MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Interview Scheduling</title>
 
   <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f2f4f7;
@@ -16,6 +24,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 15px; /* helps on small screens */
     }
 
     .form-container {
@@ -70,6 +79,21 @@
       text-align: center;
       font-size: 14px;
     }
+
+    /* MOBILE OPTIMIZATION (does not affect desktop) */
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      button {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 
@@ -115,23 +139,21 @@
       .addEventListener("submit", function (e) {
         e.preventDefault();
 
-        emailjs
-          .sendForm(
-            "service_9jsx8tn",   // your EmailJS service ID
-            "template_34f1z6c",  // your EmailJS template ID
-            this
-          )
-          .then(
-            function () {
-              document.getElementById("status").innerText =
-                "✅ Thank you! Your interview request has been submitted.";
-            },
-            function (error) {
-              document.getElementById("status").innerText =
-                "❌ Error sending request. Please try again.";
-              console.error(error);
-            }
-          );
+        emailjs.sendForm(
+          "service_9jsx8tn",   // EmailJS service ID
+          "template_34f1z6c",  // EmailJS template ID
+          this
+        ).then(
+          function () {
+            document.getElementById("status").innerText =
+              "✅ Thank you! Your interview request has been submitted.";
+          },
+          function (error) {
+            document.getElementById("status").innerText =
+              "❌ Error sending request. Please try again.";
+            console.error(error);
+          }
+        );
 
         this.reset();
       });
