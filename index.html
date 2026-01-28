@@ -167,10 +167,9 @@
       "service_9jsx8tn",
       "template_34f1z6c",
       this
-    ).then(
-      function () {
-        document.getElementById("status").innerText =
-          "✅ Thank you! Your interview request has been submitted.";
+    .then(
+  function () {
+    window.location.href = "thank-you.html";
       },
       function () {
         document.getElementById("status").innerText =
