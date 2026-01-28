@@ -129,20 +129,21 @@
     for (let min of [0, 30]) {
       if (hour === 14 && min > 0) continue;
 
-      // Value stays 24-hour (safe for backend)
-      const valueHour = hour.toString().padStart(2, "0");
-      const valueMin = min.toString().padStart(2, "0");
-      const value = `${valueHour}:${valueMin}`;
+      // 24-hour value (for backend)
+      const value = `${hour.toString().padStart(2, "0")}:${min
+        .toString()
+        .padStart(2, "0")}`;
 
-      // Display in 12-hour format
+      // 12-hour display
       const displayHour = hour > 12 ? hour - 12 : hour;
       const period = hour >= 12 ? "PM" : "AM";
-      const displayMin = min.toString().padStart(2, "0");
-      const displayText = `${displayHour}:${displayMin} ${period}`;
+      const display = `${displayHour}:${min
+        .toString()
+        .padStart(2, "0")} ${period}`;
 
       const option = document.createElement("option");
       option.value = value;
-      option.textContent = displayText;
+      option.textContent = display;
 
       timeSelect.appendChild(option);
     }
@@ -160,6 +161,7 @@
     }
   });
 
+  // Submit form
   document.getElementById("interviewForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -167,17 +169,15 @@
       "service_9jsx8tn",
       "template_34f1z6c",
       this
-    .then(
-  function () {
-    window.location.href = "thank-you.html";
+    ).then(
+      function () {
+        window.location.href = "thank-you.html";
       },
       function () {
         document.getElementById("status").innerText =
           "❌ Error sending request. Please try again.";
       }
     );
-
-    this.reset();
   });
 </script>
 
