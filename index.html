@@ -24,7 +24,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 15px; /* helps on small screens */
+      padding: 15px;
     }
 
     .form-container {
@@ -80,7 +80,12 @@
       font-size: 14px;
     }
 
-    /* MOBILE OPTIMIZATION (does not affect desktop) */
+    .hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
     @media (max-width: 480px) {
       .form-container {
         padding: 20px;
@@ -110,10 +115,20 @@
       <input type="email" name="candidate_email" required />
 
       <label>Preferred Interview Date</label>
-      <input type="date" name="interview_date" required />
+      <input type="date" name="interview_date" id="interview_date" required />
+      <div class="hint">Weekends are unavailable</div>
 
       <label>Preferred Interview Time</label>
-      <input type="time" name="interview_time" required />
+      <input
+        type="time"
+        name="interview_time"
+        id="interview_time"
+        min="08:00"
+        max="14:00"
+        step="1800"
+        required
+      />
+      <div class="hint">Available between 8:00 AM – 2:00 PM (30-minute slots)</div>
 
       <label>Time Zone</label>
       <select name="interview_timezone" required>
@@ -131,17 +146,41 @@
   <script>
     // Initialize EmailJS
     (function () {
-      emailjs.init("XpPNS8CxWR65AHgjj"); // your EmailJS public key
+      emailjs.init("XpPNS8CxWR65AHgjj");
     })();
+
+    // Disable weekends
+    const dateInput = document.getElementById("interview_date");
+    dateInput.addEventListener("change", function () {
+      const selectedDate = new Date(this.value);
+      const day = selectedDate.getUTCDay();
+
+      if (day === 0 || day === 6) {
+        this.value = "";
+        document.getElementById("status").innerText =
+          "❌ Interviews cannot be scheduled on weekends. Please select a weekday.";
+      } else {
+        document.getElementById("status").innerText = "";
+      }
+    });
 
     document
       .getElementById("interviewForm")
       .addEventListener("submit", function (e) {
         e.preventDefault();
 
+        const timeInput = this.interview_time.value;
+
+        // Time hard check (8:00 AM – 2:00 PM)
+        if (timeInput < "08:00" || timeInput > "14:00") {
+          document.getElementById("status").innerText =
+            "❌ Interview times are available only between 8:00 AM and 2:00 PM.";
+          return;
+        }
+
         emailjs.sendForm(
-          "service_9jsx8tn",   // EmailJS service ID
-          "template_34f1z6c",  // EmailJS template ID
+          "service_9jsx8tn",
+          "template_34f1z6c",
           this
         ).then(
           function () {
