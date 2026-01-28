@@ -55,6 +55,7 @@
       border-radius: 6px;
       font-weight: bold;
       transition: background 0.3s;
+      cursor: pointer;
     }
 
     .calendar-button:hover {
@@ -72,11 +73,43 @@
     <p>Thank you for your interest. We look forward to connecting with you.</p>
     <p class="note">Please ensure your email address is correct to receive the calendar invitation.</p>
 
-    <!-- Add to Calendar Button -->
-    <a class="calendar-button" href="interview.ics" download="Interview.ics">
-      Add to Calendar
-    </a>
+    <!-- Dynamic Add to Calendar Button -->
+    <button class="calendar-button" id="addCalendar">Add to Calendar</button>
   </div>
+
+  <script>
+    // Grab the button
+    const calendarButton = document.getElementById("addCalendar");
+
+    // Example dynamic values (replace with actual interview date/time from your system)
+    // Ideally, you pass these from the form submission to thank-you page
+    const interviewDate = localStorage.getItem("interview_date") || "20260130"; // YYYYMMDD
+    const interviewTime = localStorage.getItem("interview_time") || "0800";    // HHMM
+    const interviewEndTime = localStorage.getItem("interview_end_time") || "0830"; // HHMM
+
+    calendarButton.addEventListener("click", function() {
+      // Build .ics content
+      const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Your Company//Interview Scheduler//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+DTSTART:${interviewDate}T${interviewTime}00Z
+DTEND:${interviewDate}T${interviewEndTime}00Z
+SUMMARY:Interview - Remote Administrative & Billing Assistant
+DESCRIPTION:Your interview request has been received. Please join online at the scheduled time.
+LOCATION:Remote
+END:VEVENT
+END:VCALENDAR`;
+
+      // Create Blob and download
+      const blob = new Blob([icsContent], { type: "text/calendar" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Interview.ics";
+      link.click();
+    });
+  </script>
 
 </body>
 </html>
