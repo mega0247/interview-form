@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
-  <!-- IMPORTANT FOR MOBILE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Interview Scheduling</title>
@@ -12,9 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: Arial, sans-serif;
@@ -48,8 +44,7 @@
       margin-top: 15px;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 10px;
       margin-top: 6px;
@@ -70,9 +65,7 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #004182;
-    }
+    button:hover { background: #004182; }
 
     #status {
       margin-top: 15px;
@@ -85,118 +78,105 @@
       color: #666;
       margin-top: 4px;
     }
-
-    @media (max-width: 480px) {
-      .form-container {
-        padding: 20px;
-      }
-
-      h2 {
-        font-size: 20px;
-      }
-
-      button {
-        font-size: 15px;
-      }
-    }
   </style>
 </head>
 
 <body>
 
-  <div class="form-container">
-    <h2>Schedule Your Interview</h2>
+<div class="form-container">
+  <h2>Schedule Your Interview</h2>
 
-    <form id="interviewForm">
-      <label>Full Name</label>
-      <input type="text" name="candidate_name" required />
+  <form id="interviewForm">
+    <label>Full Name</label>
+    <input type="text" name="candidate_name" required />
 
-      <label>Email Address</label>
-      <input type="email" name="candidate_email" required />
+    <label>Email Address</label>
+    <input type="email" name="candidate_email" required />
 
-      <label>Preferred Interview Date</label>
-      <input type="date" name="interview_date" id="interview_date" required />
-      <div class="hint">Weekends are unavailable</div>
+    <label>Preferred Interview Date</label>
+    <input type="date" name="interview_date" id="interview_date" required />
+    <div class="hint">Weekends are unavailable</div>
 
-      <label>Preferred Interview Time</label>
-      <input
-        type="time"
-        name="interview_time"
-        id="interview_time"
-        min="08:00"
-        max="14:00"
-        step="1800"
-        required
-      />
-      <div class="hint">Available between 8:00 AM – 2:00 PM (30-minute slots)</div>
+    <label>Preferred Interview Time</label>
+    <input
+      type="time"
+      name="interview_time"
+      id="interview_time"
+      min="08:00"
+      max="14:00"
+      required
+    />
+    <div class="hint">Available between 8:00 AM – 2:00 PM (only :00 or :30)</div>
 
-      <label>Time Zone</label>
-      <select name="interview_timezone" required>
-        <option value="">Select Time Zone</option>
-        <option value="CST">Central Standard Time (CST)</option>
-        <option value="EST">Eastern Standard Time (EST)</option>
-      </select>
+    <label>Time Zone</label>
+    <select name="interview_timezone" required>
+      <option value="">Select Time Zone</option>
+      <option value="CST">Central Standard Time (CST)</option>
+      <option value="EST">Eastern Standard Time (EST)</option>
+    </select>
 
-      <button type="submit">Submit</button>
-    </form>
+    <button type="submit">Submit</button>
+  </form>
 
-    <div id="status"></div>
-  </div>
+  <div id="status"></div>
+</div>
 
-  <script>
-    // Initialize EmailJS
-    (function () {
-      emailjs.init("XpPNS8CxWR65AHgjj");
-    })();
+<script>
+  // Initialize EmailJS
+  (function () {
+    emailjs.init("XpPNS8CxWR65AHgjj");
+  })();
 
-    // Disable weekends
-    const dateInput = document.getElementById("interview_date");
-    dateInput.addEventListener("change", function () {
-      const selectedDate = new Date(this.value);
-      const day = selectedDate.getUTCDay();
+  // Block weekends
+  document.getElementById("interview_date").addEventListener("change", function () {
+    const day = new Date(this.value).getUTCDay();
+    if (day === 0 || day === 6) {
+      this.value = "";
+      document.getElementById("status").innerText =
+        "❌ Interviews cannot be scheduled on weekends.";
+    } else {
+      document.getElementById("status").innerText = "";
+    }
+  });
 
-      if (day === 0 || day === 6) {
-        this.value = "";
+  document.getElementById("interviewForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const time = this.interview_time.value;
+    const minutes = time.split(":")[1];
+
+    // Time window check
+    if (time < "08:00" || time > "14:00") {
+      document.getElementById("status").innerText =
+        "❌ Interview times are only between 8:00 AM and 2:00 PM.";
+      return;
+    }
+
+    // 30-minute slot check
+    if (minutes !== "00" && minutes !== "30") {
+      document.getElementById("status").innerText =
+        "❌ Please select a time ending in :00 or :30.";
+      return;
+    }
+
+    emailjs.sendForm(
+      "service_9jsx8tn",
+      "template_34f1z6c",
+      this
+    ).then(
+      function () {
         document.getElementById("status").innerText =
-          "❌ Interviews cannot be scheduled on weekends. Please select a weekday.";
-      } else {
-        document.getElementById("status").innerText = "";
+          "✅ Thank you! Your interview request has been submitted.";
+      },
+      function () {
+        document.getElementById("status").innerText =
+          "❌ Error sending request. Please try again.";
       }
-    });
+    );
 
-    document
-      .getElementById("interviewForm")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const timeInput = this.interview_time.value;
-
-        // Time hard check (8:00 AM – 2:00 PM)
-        if (timeInput < "08:00" || timeInput > "14:00") {
-          document.getElementById("status").innerText =
-            "❌ Interview times are available only between 8:00 AM and 2:00 PM.";
-          return;
-        }
-
-        emailjs.sendForm(
-          "service_9jsx8tn",
-          "template_34f1z6c",
-          this
-        ).then(
-          function () {
-            document.getElementById("status").innerText =
-              "✅ Thank you! Your interview request has been submitted.";
-          },
-          function (error) {
-            document.getElementById("status").innerText =
-              "❌ Error sending request. Please try again.";
-            console.error(error);
-          }
-        );
-
-        this.reset();
-      });
-  </script>
+    this.reset();
+  });
+</script>
 
 </body>
 </html>
