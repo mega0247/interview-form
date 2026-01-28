@@ -20,7 +20,7 @@
     .thank-you-box {
       background: #ffffff;
       padding: 40px;
-      max-width: 420px;
+      max-width: 500px;
       width: 100%;
       text-align: center;
       border-radius: 10px;
@@ -36,6 +36,29 @@
       font-size: 15px;
       color: #333;
       line-height: 1.5;
+      margin: 10px 0;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #666;
+      margin-top: 20px;
+    }
+
+    .calendar-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #0a66c2;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .calendar-button:hover {
+      background-color: #004182;
     }
   </style>
 </head>
@@ -44,8 +67,15 @@
 
   <div class="thank-you-box">
     <h2>Thank you!</h2>
-    <p>Your interview request has been submitted successfully.</p>
-    <p>You will be contacted with the next steps.</p>
+    <p>Your interview request has been received and is currently being processed.</p>
+    <p>You will receive a calendar invitation via email once your interview time is confirmed, along with any additional details you may need.</p>
+    <p>Thank you for your interest. We look forward to connecting with you.</p>
+    <p class="note">Please ensure your email address is correct to receive the calendar invitation.</p>
+
+    <!-- Add to Calendar Button -->
+    <a class="calendar-button" href="interview.ics" download="Interview.ics">
+      Add to Calendar
+    </a>
   </div>
 
 </body>
