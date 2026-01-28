@@ -102,11 +102,12 @@
       type="time"
       name="interview_time"
       id="interview_time"
-      min="08:00"
-      max="14:00"
+      min="08:00:00"
+      max="14:00:00"
+      step="60"
       required
     />
-    <div class="hint">Available between 8:00 AM – 2:00 PM (only :00 or :30)</div>
+    <div class="hint">8:00 AM – 2:00 PM (only :00 or :30)</div>
 
     <label>Time Zone</label>
     <select name="interview_timezone" required>
@@ -142,20 +143,22 @@
   document.getElementById("interviewForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const time = this.interview_time.value;
-    const minutes = time.split(":")[1];
+    const timeValue = this.interview_time.value; // HH:MM or HH:MM:SS
+    const parts = timeValue.split(":");
+    const hourMinute = parts[0] + ":" + parts[1];
+    const minutes = parts[1];
 
     // Time window check
-    if (time < "08:00" || time > "14:00") {
+    if (hourMinute < "08:00" || hourMinute > "14:00") {
       document.getElementById("status").innerText =
         "❌ Interview times are only between 8:00 AM and 2:00 PM.";
       return;
     }
 
-    // 30-minute slot check
+    // 30-minute validation
     if (minutes !== "00" && minutes !== "30") {
       document.getElementById("status").innerText =
-        "❌ Please select a time ending in :00 or :30.";
+        "❌ Please choose a time ending in :00 or :30.";
       return;
     }
 
